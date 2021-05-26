@@ -1,0 +1,82 @@
+def new_tabel():
+    import pandas as pd
+    import numpy as np
+    import math
+    a=0
+    counter=1
+    columns=['title','owner','cost']
+    while a!='end':
+        a=input('enter the name of person (unique) ')
+        if a =='end':
+            break
+        else:   print(f'the person number {counter} is ',a)
+        columns.append(a)
+        counter+=1
+    data=pd.DataFrame(columns=columns)
+    return data
+
+def new_record(data):
+    rows={}
+    rows['title']=input('enter the title of cost ')
+    c='0'
+    while c not in data.columns.tolist()[3:]:
+        print('please enter a valid name, someone in the list ')
+        c=input('enter the owner ')
+    rows['owner']=c
+    rows['cost']=int(input('enter the cost '))
+
+    sum_check=0
+    for i in data.columns.tolist()[3:]:
+        print(f'enter the {i} share')
+        e=input(' ')
+        rows[i]=int(e)
+        sum_check+=int(e)
+        
+        
+    if sum_check==rows['cost']:
+        print('that is right')
+        data=data.append(rows,ignore_index=True)
+    else: print('that is not right, it did not append because the cost is not equal with sum of shares,\nstart over')
+
+    return data
+
+
+def calculation(data):
+    users=['zaniar','parham']
+    paid={}
+    costs={}
+    for i in users:
+        df=data[data.owner==i]
+        paid[i]=df.cost.sum()
+        costs[i]=data[i].sum()
+        result=pd.DataFrame(columns=data.columns.tolist()[3:])
+        
+    result=result.append(costs,ignore_index=True)
+    result=result.append(paid,ignore_index=True)
+    result.index=['costs','paid']
+    remain={}
+    for i in data.columns.tolist()[3:]:
+        remain[i]=result[i][1]-result[i][0]
+
+    result=result.append(remain,ignore_index=True)
+    result.index=['costs','paid','remain']
+    return result
+
+
+data=new_tabel()
+a=int(input('how many records do you need?'))
+for i in range(a):
+    data=new_record(data)
+a=input('more records(M) or calculation(C) or you want to see data (D)')
+while a!='end':
+    if a== 'M':
+        b=int(input('how many records do you need?'))
+        for i in range(b):
+            data=new_record(data)
+    elif a== 'C':
+        C=calculation(data)
+        print(result)
+    elif a=='D':
+        print(data)
+    a=input('more records(M) or calculation(C) or you want to see data (D) or end')
+    data.to_csv('cost records.csv')
