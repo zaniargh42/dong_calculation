@@ -75,7 +75,7 @@ while a!='end':
             data=new_record(data)
     elif a== 'C':
         C=calculation(data)
-        print(result)
+        print(C)
     elif a=='D':
         print(data)
     a=input('more records(M) or calculation(C) or you want to see data (D) or end')
