@@ -42,7 +42,7 @@ def new_record(data):
 
 
 def calculation(data):
-    users=['zaniar','parham']
+    users=data.iloc[:,3:]
     paid={}
     costs={}
     for i in users:
