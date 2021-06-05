@@ -1,4 +1,36 @@
 sometimes we go out with our friends and need to calculate the costs and money share of each persons.
 It could be a hard and complex job specialy when 2 or 3 of people paid for all things.
 in farsi we call it "dong" which means share.
-just follow the instruction after running the code file, it gives you all you need.
+
+# call the class:
+to initiate the class you should give it the name of persons in a list.
+
+people=['zaniar','parham','shirin']
+c=dong_calculation(people)
+
+# review the costs dataframe
+it creates an empty dataframe called data and you can use it with the following methode:
+data=c.data
+
+# Enter the costs
+to enter the costs row by row use the following methode:
+data=c.costs(title,owner,cost,for_all=False)
+
+- title is the title of the cost
+- owner is the one who paid for it(it should be one of the people in dataframe)
+- cost is the money ( use any unit or currency you want)
+- for_all is about shares, if that cost is for all leave it by False and it aoutomaticily calulate the shares(e.g. we bought a pizza for every one and each person have equal share of it)
+but if you use True for this argument it asks you the share of persons one by one and the sum of these shares should be equal to the cost you entered before.
+
+# dropping a cost:
+if you want to drop a cost you can use the following methode:
+data=c.drop_a_cost(index) 
+index should be a list of indexes you want to drop.
+
+# dong calculation
+finally if you want to calculate every body's share and the money they should pay to others use the calculation method:
+result=c.dongs()
+it returns a dataframe that summurize anyone's costs and paids and the money that reamins.
+people that their reamin is negative should pay and positive ones should recive.
+
+
