@@ -1,82 +1,76 @@
-def new_tabel():
-    import pandas as pd
-    import numpy as np
-    import math
-    a=0
-    counter=1
-    columns=['title','owner','cost']
-    while a!='end':
-        a=input('enter the name of person (unique) ')
-        if a =='end':
-            break
-        else:   print(f'the person number {counter} is ',a)
-        columns.append(a)
-        counter+=1
-    data=pd.DataFrame(columns=columns)
-    return data
-
-def new_record(data):
-    rows={}
-    rows['title']=input('enter the title of cost ')
-    c='0'
-    while c not in data.columns.tolist()[3:]:
-        print('please enter a valid name, someone in the list ')
-        c=input('enter the owner ')
-    rows['owner']=c
-    rows['cost']=int(input('enter the cost '))
-
-    sum_check=0
-    for i in data.columns.tolist()[3:]:
-        print(f'enter the {i} share')
-        e=input(' ')
-        rows[i]=int(e)
-        sum_check+=int(e)
+class dong_calculation:
+    def __init__(self,persons_list):
+        import pandas as pd
+        columns=['title','owner','cost']
+        for i in persons_list:
+            columns.append(i)
+        self.data=pd.DataFrame(columns=columns)
         
+    def getting_shares(self,cost,columns_list):
+        shares=[]
+        sum_check=0
+        while sum_check!=cost:
+            sum_check=0
+            shares=[]
+            for i in columns_list:
+                print(f'enter the {i} share')
+                e=input(' ')
+                sum_check=sum_check+int(e)
+                shares.append(int(e))
+            if sum_check!=cost:
+                print('!!!!!!!!!ATTENTION!!!!!!!!\ncost should be equal to sum of shares')
+                continue 
+            else: break
+        print('that is true')
+        return shares
+    
+    def costs(self,title,owner,cost,for_all=False):
+        if owner not in self.data.columns.tolist()[3:]:
+            owner=input('please enter a valid name as owner, someone in the list ')     
+            while owner not in self.data.columns.tolist()[3:]:
+                print('please enter a valid name as owner, someone in the list ')
+                owner=input('enter the owner ')
+        else: pass
         
-    if sum_check==rows['cost']:
-        print('that is right')
-        data=data.append(rows,ignore_index=True)
-    else: print('that is not right, it did not append because the cost is not equal with sum of shares,\nstart over')
-
-    return data
-
-
-def calculation(data):
-    users=data.iloc[:,3:]
-    paid={}
-    costs={}
-    for i in users:
-        df=data[data.owner==i]
-        paid[i]=df.cost.sum()
-        costs[i]=data[i].sum()
-        result=pd.DataFrame(columns=data.columns.tolist()[3:])
+        entery=[title,owner,cost]
+        if for_all:
+            share_list=[cost/len(self.data.columns.tolist()[3:])]*len(self.data.columns.tolist()[3:])
+        else: share_list=self.getting_shares(cost,self.data.columns.tolist()[3:])
+            
+        for i in share_list: entery.append(i)
+        row={}
+        for i in range(len(self.data.columns)):
+            row[self.data.columns[i]]=entery[i]
         
-    result=result.append(costs,ignore_index=True)
-    result=result.append(paid,ignore_index=True)
-    result.index=['costs','paid']
-    remain={}
-    for i in data.columns.tolist()[3:]:
-        remain[i]=result[i][1]-result[i][0]
+        self.data=self.data.append(row,ignore_index=True)
+        return self.data
+    
+    def dongs(self):
+        data=self.data
+        users=data.iloc[:,3:]
+        paid={}
+        costs={}
+        for i in users:
+            df=data[data.owner==i]
+            paid[i]=df.cost.sum()
+            costs[i]=data[i].sum()
+            result=pd.DataFrame(columns=data.columns.tolist()[3:])
 
-    result=result.append(remain,ignore_index=True)
-    result.index=['costs','paid','remain']
-    return result
+        result=result.append(costs,ignore_index=True)
+        result=result.append(paid,ignore_index=True)
+        result.index=['costs','paid']
+        remain={}
+        for i in data.columns.tolist()[3:]:
+            remain[i]=result[i][1]-result[i][0]
 
-
-data=new_tabel()
-a=int(input('how many records do you need?'))
-for i in range(a):
-    data=new_record(data)
-a=input('more records(M) or calculation(C) or you want to see data (D)')
-while a!='end':
-    if a== 'M':
-        b=int(input('how many records do you need?'))
-        for i in range(b):
-            data=new_record(data)
-    elif a== 'C':
-        C=calculation(data)
-        print(C)
-    elif a=='D':
-        print(data)
-    a=input('more records(M) or calculation(C) or you want to see data (D) or end')
-    data.to_csv('cost records.csv')
+        result=result.append(remain,ignore_index=True)
+        result.index=['costs','paid','remain']
+        return result
+    
+    def drop_a_cost(self,index): # index is a list
+        for i in index:
+            if i not in self.data.index.tolist():
+                print(f'your index {i} is not in costs')
+                break
+            else: self.data.drop(index,axis=0,inplace=True)
+        return self.data
