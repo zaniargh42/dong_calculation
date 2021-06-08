@@ -33,4 +33,6 @@ result=c.dongs()
 it returns a dataframe that summurize anyone's costs and paids and the money that reamins.
 people that their reamin is negative should pay and positive ones should recive.
 
-
+# who_to_whom
+if you use the who_to_whom method it gives suggestions of who should give how much money to whom. it is interesting part of the project.
+c.who_to_whom()
