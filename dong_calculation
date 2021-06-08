@@ -1,6 +1,6 @@
+import pandas as pd
 class dong_calculation:
     def __init__(self,persons_list):
-        import pandas as pd
         columns=['title','owner','cost']
         for i in persons_list:
             columns.append(i)
@@ -41,7 +41,6 @@ class dong_calculation:
         row={}
         for i in range(len(self.data.columns)):
             row[self.data.columns[i]]=entery[i]
-        
         self.data=self.data.append(row,ignore_index=True)
         return self.data
     
@@ -74,3 +73,32 @@ class dong_calculation:
                 break
             else: self.data.drop(index,axis=0,inplace=True)
         return self.data
+    
+    def who_to_whom(self):
+        a=self.dongs()
+        neg={}
+        pos={}
+        for i in a.columns:
+            b=a.loc[:,i]['remain']
+            if b>0:
+                pos[i]=b
+            elif b<0: 
+                neg[i]=b
+            else: pass
+        for i in range(max(len(pos),len(neg))):
+            x=max(pos.items(), key=operator.itemgetter(1))[1]
+            y=abs(max(neg.items(), key=operator.itemgetter(1))[1])
+            x_name=max(pos.items(), key=operator.itemgetter(1))[0]
+            y_name=max(neg.items(), key=operator.itemgetter(1))[0]
+            if x==y:
+                del pos[x_name]
+                del neg[y_name]
+                print(f'{y_name} should give {x} to {x_name}')
+            elif x>y:
+                del neg[y_name]
+                pos[x_name]=x-y
+                print(f'{x_name} should give {y} to {y_name}')
+            elif x<y:
+                del pos[x_name]
+                neg[y_name]=y-x
+                print(f'{y_name} should give {x} to {x_name}')
