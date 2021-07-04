@@ -1,4 +1,5 @@
 import pandas as pd
+import operator
 class dong_calculation:
     def __init__(self,persons_list):
         columns=['title','owner','cost']
@@ -24,7 +25,7 @@ class dong_calculation:
         print('that is true')
         return shares
     
-    def costs(self,title,owner,cost,for_all=False):
+    def enter_cost(self,title,owner,cost,for_all=False):
         if owner not in self.data.columns.tolist()[3:]:
             owner=input('please enter a valid name as owner, someone in the list ')     
             while owner not in self.data.columns.tolist()[3:]:
@@ -44,7 +45,7 @@ class dong_calculation:
         self.data=self.data.append(row,ignore_index=True)
         return self.data
     
-    def dongs(self):
+    def each_persons_summary(self):
         data=self.data
         users=data.iloc[:,3:]
         paid={}
@@ -64,6 +65,7 @@ class dong_calculation:
 
         result=result.append(remain,ignore_index=True)
         result.index=['costs','paid','remain']
+        result=result.apply(lambda x: round(x))
         return result
     
     def drop_a_cost(self,index): # index is a list
@@ -72,9 +74,10 @@ class dong_calculation:
                 print(f'your index {i} is not in costs')
                 break
             else: self.data.drop(index,axis=0,inplace=True)
+            self.data.reset_index(drop=True,inplace=True)
         return self.data
     
-    def definition(self):
+    def who_to_whom(self):
         a=self.dongs()
         neg={}
         pos={}
@@ -93,12 +96,15 @@ class dong_calculation:
             if x==y:
                 del pos[x_name]
                 del neg[y_name]
-                print(f'{y_name} should give {x} to {x_name}')
+                print(f'{y_name} should give {round(x,-3)} to {x_name}')
             elif x>y:
                 del neg[y_name]
                 pos[x_name]=x-y
-                print(f'{y_name} should give {y} to {x_name}')
+                print(f'{y_name} should give {round(y,-3)} to {x_name}')
             elif x<y:
                 del pos[x_name]
                 neg[y_name]=y-x
-                print(f'{y_name} should give {x} to {x_name}')
+                print(f'{y_name} should give {round(x,-3)} to {x_name}')
+    def save_csv(self):
+        self.data.to_csv('costs.csv')
+        
