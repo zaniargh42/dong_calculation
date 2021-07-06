@@ -45,6 +45,12 @@ class dong_calculation:
         self.data=self.data.append(row,ignore_index=True)
         return self.data
     
+    def import_csv_data(self,address):
+        imported_data=pd.read_csv(address)
+        imported_data.drop(['Unnamed: 0'],axis=1,inplace=True)
+        self.data=imported_data
+        return self.data
+    
     def each_persons_summary(self):
         data=self.data
         users=data.iloc[:,3:]
@@ -65,7 +71,7 @@ class dong_calculation:
 
         result=result.append(remain,ignore_index=True)
         result.index=['costs','paid','remain']
-        result=result.apply(lambda x: round(x))
+        result=result.apply(lambda x: round(x,-3))
         return result
     
     def drop_a_cost(self,index): # index is a list
@@ -78,7 +84,7 @@ class dong_calculation:
         return self.data
     
     def who_to_whom(self):
-        a=self.dongs()
+        a=self.each_persons_summary()
         neg={}
         pos={}
         for i in a.columns:
